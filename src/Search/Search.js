@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { search, update } from "../BooksAPI";
+import PropTypes from "prop-types";
+import { search } from "../BooksAPI";
 import Book from "../Book";
 
 class Search extends Component {
@@ -20,18 +21,9 @@ class Search extends Component {
     }
   };
 
-  handleBookShelfChange = (book, shelf) => {
-    update(book, shelf).then(() => {
-      this.setState({
-        searchResult: this.state.searchResult.map(
-          currentBook =>
-            book.id === currentBook.id ? { ...currentBook, shelf } : currentBook
-        )
-      });
-    });
-  };
-
   render() {
+    const bookShelfMap = {};
+    this.props.shelfBooks.forEach(book => (bookShelfMap[book.id] = book.shelf));
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -52,8 +44,8 @@ class Search extends Component {
             {this.state.searchResult.map(book => (
               <Book
                 key={book.id}
-                book={book}
-                onBookShelfChange={this.handleBookShelfChange}
+                book={{ ...book, shelf: bookShelfMap[book.id] }}
+                onBookShelfChange={this.props.onBookShelfChange}
               />
             ))}
           </ol>
@@ -62,5 +54,10 @@ class Search extends Component {
     );
   }
 }
+
+Search.propTypes = {
+  shelfBooks: PropTypes.array.isRequired,
+  onBookShelfChange: PropTypes.func.isRequired
+};
 
 export default Search;

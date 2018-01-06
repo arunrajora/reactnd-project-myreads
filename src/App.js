@@ -17,11 +17,17 @@ class BooksApp extends Component {
   handleBookShelfChange = (book, shelf) => {
     update(book, shelf).then(() => {
       let shelfBooks = [];
-      if (shelf)
+      if (
+        shelf &&
+        this.state.shelfBooks.filter(currentBook => currentBook.id === book.id)
+          .length > 0
+      )
         shelfBooks = this.state.shelfBooks.map(
           currentBook =>
             book.id === currentBook.id ? { ...currentBook, shelf } : currentBook
         );
+      else if (shelf)
+        shelfBooks = [...this.state.shelfBooks, {...book, shelf}]
       else
         shelfBooks = this.state.shelfBooks.filter(
           currentBook => currentBook.id !== book.id

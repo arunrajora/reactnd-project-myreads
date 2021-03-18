@@ -1,47 +1,44 @@
-import React, { Component } from "react";
-import { Route } from "react-router-dom";
-import Home from "./Home/Home.js";
-import Search from "./Search/Search.js";
-import { getAll, update } from "./BooksAPI";
-import "./App.css";
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+import Home from './Home/Home.js';
+import Search from './Search/Search.js';
+import { getAll, update } from './BooksAPI';
+import './App.css';
 
 class BooksApp extends Component {
   state = {
-    shelfBooks: []
+    shelfBooks: [],
   };
 
   componentDidMount() {
-    getAll().then(shelfBooks => this.setState({ shelfBooks }));
+    getAll().then((shelfBooks) => this.setState({ shelfBooks }));
   }
 
   handleBookShelfChange = (book, shelf) => {
-    update(book, shelf).then(() => {
-      let shelfBooks = [];
-      if (
-        shelf &&
-        this.state.shelfBooks.filter(currentBook => currentBook.id === book.id)
-          .length > 0
-      )
-        shelfBooks = this.state.shelfBooks.map(
-          currentBook =>
-            book.id === currentBook.id ? { ...currentBook, shelf } : currentBook
-        );
-      else if (shelf)
-        shelfBooks = [...this.state.shelfBooks, {...book, shelf}]
-      else
-        shelfBooks = this.state.shelfBooks.filter(
-          currentBook => currentBook.id !== book.id
-        );
-      this.setState({ shelfBooks });
-    });
+    let shelfBooks = [];
+    if (
+      shelf &&
+      this.state.shelfBooks.filter((currentBook) => currentBook.id === book.id)
+        .length > 0
+    )
+      shelfBooks = this.state.shelfBooks.map((currentBook) =>
+        book.id === currentBook.id ? { ...currentBook, shelf } : currentBook
+      );
+    else if (shelf) shelfBooks = [...this.state.shelfBooks, { ...book, shelf }];
+    else
+      shelfBooks = this.state.shelfBooks.filter(
+        (currentBook) => currentBook.id !== book.id
+      );
+    this.setState({ shelfBooks });
+    update(book, shelf);
   };
 
   render() {
     return (
-      <div className="app">
+      <div className='app'>
         <Route
           exact
-          path="/"
+          path='/'
           render={() => (
             <Home
               shelfBooks={this.state.shelfBooks}
@@ -51,7 +48,7 @@ class BooksApp extends Component {
         />
         <Route
           exact
-          path="/search"
+          path='/search'
           render={() => (
             <Search
               shelfBooks={this.state.shelfBooks}
